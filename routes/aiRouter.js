@@ -8,20 +8,20 @@ const isLoggedIn = require("../middlewares/isLoggedin")
 const genAI = new GoogleGenerativeAI("AIzaSyCK-kju2JlmNKfavdohtxpFGm7a1EkswZQ");
 
 router.post("/gemini", isLoggedIn, async (req, res) => {
-  const { content, conversationId,title } = req.body;
+  const { content, conversationId, title } = req.body;
 
   try {
     let conversation;
     if (conversationId) {
       conversation = await Conversation.findById(conversationId);
     } else {
-      conversation = new Conversation({ userId: req.user._id,title });
+      conversation = new Conversation({ userId: req.user._id, title });
       await conversation.save();
     }
 
     const userMsg = new Message({
       sender: "user",
-      userId: req.user._id, 
+      userId: req.user._id,
       conversationId: conversation._id,
       content,
     });
@@ -51,13 +51,11 @@ router.post("/gemini", isLoggedIn, async (req, res) => {
 router.get("/allconversations", isLoggedIn, async (req, res) => {
   try {
     const conversations = await Conversation.find({ userId: req.user._id });
-    // console.log(req.user);
-
     console.log("Conversations sent to frontend:", conversations);
-    res.send({ data: conversations, user: req.user });
+    return res.send({ data: conversations, user: req.user });
   } catch (error) {
     console.log("Error in backend fetch all conversations:", error);
-    res.status(500).send({ error: "Server error" });
+    return res.status(500).send({ error: "Server error" });
   }
 });
 
@@ -65,7 +63,7 @@ router.delete("/deleteConversation/:id", isLoggedIn, async (req, res) => {
   try {
     let conversation = await Conversation.findOneAndDelete({
       _id: req.params.id,
-     
+
     });
     if (!conversation) {
       console.log("conversation not found!!");
@@ -85,8 +83,8 @@ router.get("/showconversation/:id", isLoggedIn, async (req, res) => {
       conversationId: req.params.id,
 
     });
-    console.log("all messages of given id:",messages);
-    
+    console.log("all messages of given id:", messages);
+
     res.status(200).send({ messages });
   } catch (error) {
     console.log(

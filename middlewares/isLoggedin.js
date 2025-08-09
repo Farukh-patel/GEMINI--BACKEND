@@ -12,6 +12,10 @@ module.exports = async (req, res, next) => {
       .findOne({ email: decoded.email })
       .select("-password");
 
+      if(!user){
+        return res.send({status: false, message:'Invalid user'});
+      }
+
     req.user = user;
     next();
   } catch (error) {
