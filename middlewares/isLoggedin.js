@@ -3,7 +3,7 @@ const userModel = require("../models/user");
 
 module.exports = async (req, res, next) => {
   if (!req.cookies.token) {
-    return res.redirect("/login");
+    res.send({ status: false, message: "Please login to system." })
   }
   try {
     let decoded = jwt.verify(req.cookies.token, process.env.jwt_secret);
@@ -11,7 +11,8 @@ module.exports = async (req, res, next) => {
     req.user = user;
     next();
   } catch (error) {
-    console.log("error in middle ware ",error.message);
-    res.redirect("/login");
+    console.log("error in middle ware ", error.message);
+    res.send({ status: false, message: "Please login to system." })
+
   }
 };
