@@ -15,7 +15,7 @@ app.use(cookieParser());
 
 app.use(
   cors({
-    origin: "*",
+    origin: "https://gemini-clone-client.vercel.app",
     credentials: true,
   })
 );
