@@ -3,16 +3,19 @@ const userModel = require("../models/user");
 
 module.exports = async (req, res, next) => {
   if (!req.cookies.token) {
-    res.send({ status: false, message: "Please login to system." })
+    return res.send({ success: false, message: "Please login to system." });
   }
+
   try {
     let decoded = jwt.verify(req.cookies.token, process.env.jwt_secret);
-    let user = await userModel.findOne({ email: decoded.email }).select("-password");
+    let user = await userModel
+      .findOne({ email: decoded.email })
+      .select("-password");
+
     req.user = user;
     next();
   } catch (error) {
-    console.log("error in middle ware ", error.message);
-    res.send({ status: false, message: "Please login to system." })
-
+    console.log("error in middleware", error.message);
+    return res.send({ success: false, message: "Please login to system." });
   }
 };
