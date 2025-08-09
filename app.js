@@ -1,5 +1,4 @@
 const express = require("express");
-const app = express();
 const cors = require("cors");
 const connectDB = require("./config/mongoose-connection");
 const userRouter = require("./routes/userRouter");
@@ -8,6 +7,9 @@ const cookieParser = require("cookie-parser");
 const path = require("path");
 require("dotenv").config();
 
+const app = express();
+
+app.set("trust proxy", 1);
 // Middleware
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
