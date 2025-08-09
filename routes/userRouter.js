@@ -24,7 +24,13 @@ router.post("/auth/signup", async (req, res) => {
         });
 
         let token = jwt.sign({ email, userid: user._id }, process.env.jwt_secret);
-        res.cookie("token", token);
+        res.cookie("token", token, {
+          httpOnly: true,
+          secure: true,          // only send over HTTPS
+          sameSite: "None",      // allow cross-site cookie
+          maxAge: 24 * 60 * 60 * 1000 // 1 day
+        });
+
         console.log("user crested in signup:", user);
 
         return res.send(`user`);
@@ -71,7 +77,13 @@ router.post("/auth/login", async (req, res) => {
 });
 
 router.get("/logout", (req, res) => {
-  res.cookie("token", "");
+  res.cookie("token", "", {
+          httpOnly: true,
+          secure: true,          // only send over HTTPS
+          sameSite: "None",      // allow cross-site cookie
+          maxAge: 0 
+        });
+
   return res.send({ "message": "user loged out successfully" })
 })
 
